@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { ReactComponent as Logo } from '../../assets/crown.svg';
+import { ReactComponent as Logo } from "../../assets/crown.svg";
 
-import './header.styles.scss';
+import "./header.styles.scss";
 
 const Header = () => (
   <div className='header'>
@@ -16,6 +16,9 @@ const Header = () => (
       </Link>
       <Link className='option' to='/shop'>
         CONTACT
+      </Link>
+      <Link className='option' to='/signin'>
+        SIGN IN
       </Link>
     </div>
   </div>
