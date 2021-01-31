@@ -1,39 +1,51 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React from "react";
+import { Switch, Route } from "react-router-dom";
 
-import './App.css';
+import "./App.css";
 
-import HomePage from './pages/homepage/homepage.component';
-import ShopPage from './pages/shop/shop.component';
-import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
-import Header from './components/header/header.component';
-import {auth } from './firebase/firebase.util'
+import HomePage from "./pages/homepage/homepage.component";
+import ShopPage from "./pages/shop/shop.component";
+import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
+import Header from "./components/header/header.component";
+import { auth, createUserProfileDocument } from "./firebase/firebase.util";
 
 class App extends React.Component {
-
-  constructor(){
+  constructor() {
     super();
     this.state = {
-      currentUser : null
-    }
+      currentUser: null,
+    };
   }
 
   userUnsubscribeFromAuth = null;
 
-  componentDidMount(){
-    this.userUnsubscribeFromAuth =  auth.onAuthStateChanged( user => {
-      this.setState({currentUser : user});
-    })
+  componentDidMount() {
+    this.userUnsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+        userRef.onSnapshot((snapShot) => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
+            },
+          });
+          console.log(this.state);
+        });
+      }
+
+      this.setState({ currentUser: userAuth });
+    });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.userUnsubscribeFromAuth();
   }
 
-  render(){
-   return (
+  render() {
+    return (
       <div>
-        <Header currentUser = {this.state.currentUser} />
+        <Header currentUser={this.state.currentUser} />
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
@@ -41,8 +53,7 @@ class App extends React.Component {
         </Switch>
       </div>
     );
-  } 
-  
+  }
 }
 
 export default App;
