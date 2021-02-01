@@ -32,7 +32,7 @@ const Header = ({ currentUser, isCarthidden }) => (
 			)}
 			<CartIcon />
 		</div>
-		{isCarthidden ? <CartDropdown /> : null}
+		{!isCarthidden ? <CartDropdown /> : null}
 	</div>
 );
 
